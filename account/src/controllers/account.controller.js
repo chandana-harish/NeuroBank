@@ -1,14 +1,16 @@
 import Account from "../models/account.model.js";
+import generateAccountNumber from "../utils/generateNumber.js";
 
 export const createAccount = async (req, res) => {
+  console.log(req.user);
   try {
     const account = await Account.create({
       owner: req.user.id,
       accountNumber: generateAccountNumber(),
-      accountType,
-      balance,
-      currency,
-      status,
+      accountType: "saving",
+      balance: 0,
+      currency: "INR",
+      status: "active",
     });
     return res.status(201).json({ message: "Account Created", account });
   } catch (error) {
@@ -22,7 +24,7 @@ export const getBalance = async (req, res) => {
   try {
     const account = await Account.findOne({
       owner: req.user.id,
-    });
+    }).populate("owner", "fullName email");
     if (!account) {
       return res.status(404).json({
         message: "Account not found",
