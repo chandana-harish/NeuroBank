@@ -1,1 +1,25 @@
 @import "tailwindcss";
+
+@layer base {
+  body {
+    @apply bg-[#0c0f1a] text-white;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+}
+
+/* Custom Utilities for Glassmorphism and Gradients */
+@layer utilities {
+  .glass {
+    @apply bg-[#151828] border border-[#232738] shadow-lg shadow-black/20;
+  }
+  
+  .glass-card {
+    background: linear-gradient(135deg, rgba(21, 24, 40, 0.8) 0%, rgba(15, 18, 30, 0.9) 100%);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-500;
+  }
+}
