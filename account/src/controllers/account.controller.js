@@ -31,13 +31,17 @@ export const getBalance = async (req, res) => {
   try {
     const account = await Account.findOne({
       owner: req.user.id,
-    }).populate("owner", "fullName email");
+    });
     if (!account) {
       return res.status(404).json({
         message: "Account not found",
       });
     }
-    return res.status(200).json({ message: "Balance Retrieved", account });
+    const owner = req.user;
+
+    return res
+      .status(200)
+      .json({ message: "Balance Retrieved", account, owner });
   } catch (error) {
     return res.status(500).json({
       message: error.message,

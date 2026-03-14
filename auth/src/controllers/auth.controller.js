@@ -1,7 +1,7 @@
 import User from "../models/auth.model.js";
 import config from "../configs/config.js";
 import redis from "../utils/redis.js";
-import jwt from "jsonwebtoken";
+import generateToken from "../utils/generateToken.js";
 
 export const register = async (req, res) => {
   try {
@@ -60,9 +60,7 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ id: user._id }, config.JWT_SECRET, {
-      expiresIn: config.JWT_EXPIRE,
-    });
+    const token = generateToken(user);
 
     res.cookie("token", token, {
       httpOnly: true,
