@@ -7,6 +7,8 @@ const _config = {
   MONGOURI: process.env.MONGOURI,
   JWT_SECRET: process.env.JWT_SECRET,
   JWT_EXPIRE: process.env.JWT_EXPIRE,
+  UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
+  UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
 };
 
 const config = Object.freeze(_config);
