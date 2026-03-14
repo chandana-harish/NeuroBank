@@ -1,8 +1,10 @@
 import { useDispatch } from 'react-redux';
+import { useTheme } from '../context/ThemeContext';
 import { LayoutDashboard, Compass, CreditCard, ArrowRightLeft, FileText, TrendingUp, Landmark, Calculator, Moon, Sun, Sparkles, LogOut, X } from 'lucide-react';
 
 const Sidebar = ({ isOpen, onClose }) => {
   const dispatch = useDispatch();
+  const { theme, setTheme } = useTheme();
 
   const handleLogout = () => {
     dispatch();
@@ -30,7 +32,7 @@ const Sidebar = ({ isOpen, onClose }) => {
         
       <div className={`
         fixed md:static inset-y-0 left-0 z-50
-        w-80 h-screen bg-[#0f1221] border-r border-[#1f2335] flex flex-col p-6 
+        w-80 h-screen bg-white dark:bg-[#0f1221] border-r border-gray-200 dark:border-[#1f2335] flex flex-col p-6 
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}>
@@ -39,26 +41,38 @@ const Sidebar = ({ isOpen, onClose }) => {
             <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-xl tracking-wide text-white">NeuroBank</span>
+            <span className="font-bold text-xl tracking-wide text-gray-900 dark:text-white">NeuroBank</span>
           </div>
-          <button onClick={onClose} className="md:hidden text-gray-400 hover:text-white">
+          <button onClick={onClose} className="md:hidden text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
             <X className="w-6 h-6" />
           </button>
         </div>
 
-      <div className="flex items-center justify-between bg-[#15182a] p-3 rounded-2xl mb-8 border border-[#232738]">
+      <div className="flex items-center justify-between bg-gray-50 dark:bg-[#15182a] p-3 rounded-2xl mb-8 border border-gray-100 dark:border-[#232738] transition-colors">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-indigo-500 overflow-hidden">
             <img src="https://i.pravatar.cc/150?img=11" alt="Profile" className="w-full h-full object-cover" />
           </div>
           <div>
-            <p className="text-xs text-gray-400 uppercase font-medium tracking-wider mb-0.5">Monday, March 24</p>
-            <p className="text-sm font-semibold text-white">Welcome back,<br/>George!</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-medium tracking-wider mb-0.5">Monday, March 24</p>
+            <p className="text-sm font-semibold text-gray-900 dark:text-white">Welcome back,<br/>George!</p>
           </div>
         </div>
-        <div className="flex flex-col gap-1 pr-1">
-          <button className="text-gray-400 hover:text-white"><Moon className="w-4 h-4" /></button>
-          <button className="text-gray-600 hover:text-white"><Sun className="w-4 h-4" /></button>
+        <div className="flex flex-col gap-1 pr-1 bg-white dark:bg-[#0f1221] p-1 rounded-lg border border-gray-200 dark:border-[#1f2335]">
+          <button 
+            onClick={() => setTheme('light')} 
+            className={`p-1.5 rounded-md transition-colors ${theme === 'light' ? 'bg-gray-100 text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'}`}
+            title="Light Mode"
+          >
+            <Sun className="w-3.5 h-3.5" />
+          </button>
+          <button 
+            onClick={() => setTheme('dark')} 
+            className={`p-1.5 rounded-md transition-colors ${theme === 'dark' ? 'bg-gray-100 text-gray-900 shadow-sm dark:bg-[#1a1d2d] dark:text-white' : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'}`}
+            title="Dark Mode"
+          >
+            <Moon className="w-3.5 h-3.5" />
+          </button>
         </div>
       </div>
 
@@ -68,8 +82,8 @@ const Sidebar = ({ isOpen, onClose }) => {
             key={index}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
               item.active 
-                ? 'bg-[#1e2235] text-white font-medium' 
-                : 'text-gray-400 hover:bg-[#1a1d2d] hover:text-gray-200'
+                ? 'bg-blue-50 text-blue-700 dark:bg-[#1e2235] dark:text-white font-medium' 
+                : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-[#1a1d2d] hover:text-gray-900 dark:hover:text-gray-200'
             }`}
           >
             <item.icon className="w-5 h-5" />

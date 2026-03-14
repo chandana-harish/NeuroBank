@@ -11,7 +11,7 @@ const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
   return (
-    <div className="flex h-screen bg-[#0c0f1a] text-white overflow-hidden w-full relative">
+    <div className="flex h-screen bg-gray-50 dark:bg-[#0c0f1a] text-gray-900 dark:text-white overflow-hidden w-full relative transition-colors duration-300">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <Dashboard onMenuClick={() => setIsSidebarOpen(true)} />
     </div>
