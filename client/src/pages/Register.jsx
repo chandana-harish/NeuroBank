@@ -8,8 +8,10 @@ const Register = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [formError, setFormError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState([]);
   const navigate = useNavigate();
-  const [register, { isLoading, isError }] = useRegisterMutation();
+  const [register, { isLoading }] = useRegisterMutation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,9 +22,14 @@ const Register = () => {
           email,
           password,
         }).unwrap();
+        setFormError("");
+        setFieldErrors([]);
         navigate("/login");
       } catch (err) {
-        console.error("Registration failed:", err);
+        const apiMessage = err?.data?.message || "Registration failed.";
+        const apiFieldErrors = err?.data?.errors || [];
+        setFormError(apiMessage);
+        setFieldErrors(apiFieldErrors);
       }
     }
   };
@@ -130,10 +137,16 @@ const Register = () => {
               </div>
             </div>
 
-            {isError && (
-              <p className="text-red-500 text-sm mt-2">
-                Registration failed. Please try again.
-              </p>
+            {(formError || fieldErrors.length > 0) && (
+              <div className="text-red-500 text-sm space-y-1 mt-2">
+                {formError && <p>{formError}</p>}
+                {fieldErrors.map((errObj, idx) => (
+                  <p key={`${errObj?.field || "error"}-${idx}`}>
+                    {errObj?.field ? `${errObj.field}: ` : ""}
+                    {errObj?.msg || "Invalid input"}
+                  </p>
+                ))}
+              </div>
             )}
 
             <button

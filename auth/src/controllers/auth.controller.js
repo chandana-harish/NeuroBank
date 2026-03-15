@@ -2,6 +2,7 @@ import User from "../models/auth.model.js";
 import config from "../configs/config.js";
 import redis from "../utils/redis.js";
 import generateToken from "../utils/generateToken.js";
+import { parseExpToMs, parseExpToSec } from "../utils/parse.js";
 
 export const register = async (req, res) => {
   try {
@@ -67,7 +68,7 @@ export const login = async (req, res) => {
       secure: config.NODE_ENV === "production",
       sameSite: "strict",
       path: "/",
-      maxAge: Number(config.JWT_EXPIRE) * 1000,
+      maxAge: parseExpToMs(config.JWT_EXPIRE),
     });
 
     const { password: _pw, ...userSafe } = user.toObject();
@@ -92,7 +93,7 @@ export const logout = async (req, res) => {
     }
 
     await redis.set(`blacklist:${token}`, "true", {
-      ex: Math.max(Number(config.JWT_EXPIRE) || 3600, 1),
+      ex: Math.max(parseExpToSec(config.JWT_EXPIRE), 1),
     });
     res.clearCookie("token", {
       httpOnly: true,

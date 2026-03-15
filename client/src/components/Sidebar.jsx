@@ -20,6 +20,7 @@ import {
 const Sidebar = ({ isOpen, onClose }) => {
   const [logout, { isLoading }] = useLogoutMutation();
   const { data: profile } = useProfileQuery();
+  console.log(profile?.user);
 
   const navigate = useNavigate();
 
@@ -100,7 +101,7 @@ const Sidebar = ({ isOpen, onClose }) => {
               <p className="text-sm font-semibold text-gray-900 dark:text-white">
                 Welcome back,
                 <br />
-                {profile?.user?.firstName || "User"}!
+                {profile?.user?.firstName || "Guest"}!
               </p>
             </div>
           </div>

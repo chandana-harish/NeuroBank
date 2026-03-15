@@ -6,8 +6,9 @@ import { useLoginMutation } from "../services/auth.api";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [formError, setFormError] = useState("");
   const navigate = useNavigate();
-  const [login, { isLoading, isError }] = useLoginMutation();
+  const [login, { isLoading, error: apiError }] = useLoginMutation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,9 +18,14 @@ const Login = () => {
           email,
           password,
         }).unwrap();
+        setFormError("");
         navigate("/dashboard");
       } catch (err) {
-        console.error("Login failed:", err);
+        const apiMessage =
+          err?.data?.message ||
+          apiError?.data?.message ||
+          "Login failed. Please check your credentials.";
+        setFormError(apiMessage);
       }
     }
   };
@@ -96,10 +102,12 @@ const Login = () => {
               </div>
             </div>
 
-            {isError && (
-              <p className="text-red-500 text-sm mt-2">
-                Login failed. Please check your credentials.
-              </p>
+            {(formError || apiError) && (
+              <div className="text-red-500 text-sm mt-2">
+                {formError ||
+                  apiError?.data?.message ||
+                  "Login failed. Please check your credentials."}
+              </div>
             )}
 
             <button
