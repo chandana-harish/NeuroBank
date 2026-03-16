@@ -19,7 +19,7 @@ const ProfilePage = ({ onMenuClick }) => {
   const {data: user} = useProfileQuery();
 
   const userStats = [
-    { label: "Member Since", value: "Nov 2022" },
+    { label: "Member Since", value: user?.user?.createdAt ? new Date(user.user.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "..." },
     { label: "Account Level", value: "Platinum Pro" },
     { label: "Safety Score", value: "98/100" },
   ];

@@ -125,56 +125,57 @@ const Accounts = ({ onMenuClick }) => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-            {/* Redesigned "Perfect and Nice" Account Card */}
+            {/* Redesigned "Ultra Premium" Account Card */}
             <div className="lg:col-span-2 group">
-                <div className="relative p-10 rounded-[48px] overflow-hidden transition-all duration-700 transform hover:translate-y-[-4px]">
-                    {/* Background Layer (Animated Mesh Gradient) */}
-                    <div className="absolute inset-0 bg-[#0a0c14]"></div>
-                    <div className="absolute -top-[20%] -right-[10%] w-[80%] h-[120%] bg-gradient-to-br from-blue-600/40 via-indigo-600/20 to-transparent blur-[100px] rounded-full animate-pulse transition-all group-hover:scale-110"></div>
-                    <div className="absolute -bottom-[20%] -left-[10%] w-[60%] h-[100%] bg-gradient-to-tr from-purple-600/30 via-transparent to-transparent blur-[80px] rounded-full animate-pulse delay-700"></div>
+                <div className="relative p-12 rounded-[56px] overflow-hidden transition-all duration-700 transform hover:scale-[1.01] shadow-2xl shadow-blue-900/10">
+                    {/* Deep Onyx Base */}
+                    <div className="absolute inset-0 bg-[#05070a]"></div>
                     
-                    {/* Border effect */}
-                    <div className="absolute inset-0 rounded-[48px] border border-white/10 group-hover:border-white/20 transition-colors pointer-events-none"></div>
-                    <div className="absolute inset-[1px] rounded-[47px] border border-white/5 pointer-events-none"></div>
+                    {/* Sophisticated Lighting */}
+                    <div className="absolute -top-[40%] -right-[20%] w-[100%] h-[150%] bg-gradient-to-br from-blue-500/20 via-indigo-500/10 to-transparent blur-[120px] rounded-full"></div>
+                    <div className="absolute top-[20%] left-[10%] w-[40%] h-[40%] bg-purple-500/10 blur-[90px] rounded-full animate-pulse"></div>
+                    
+                    {/* Structural Accents */}
+                    <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
+                    <div className="absolute inset-0 rounded-[56px] border border-white/10 pointer-events-none"></div>
 
                     {/* Card Content */}
-                    <div className="relative z-10 flex flex-col h-full min-h-[320px]">
-                        <div className="flex justify-between items-start mb-16">
-                            <div className="flex items-center gap-4">
-                                <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-2xl">
-                                    <Fingerprint className="w-7 h-7 text-white" />
+                    <div className="relative z-10 flex flex-col h-full min-h-[360px]">
+                        <div className="flex justify-between items-start mb-20">
+                            <div className="flex items-center gap-6">
+                                <div className="w-16 h-16 rounded-3xl bg-white/5 backdrop-blur-3xl border border-white/10 flex items-center justify-center shadow-inner">
+                                    <Sparkles className="w-8 h-8 text-blue-400" />
                                 </div>
                                 <div>
-                                    <p className="text-[10px] text-white/40 font-black uppercase tracking-[0.3em] mb-1">Network Private</p>
-                                    <h4 className="text-lg font-bold text-white tracking-tight">{account.accountType === 'saving' ? 'Platinum Reserve' : 'Premium Flow'}</h4>
+                                    <p className="text-[10px] text-white/30 font-black uppercase tracking-[0.5em] mb-1.5">NeuroBank Intelligence</p>
+                                    <h4 className="text-xl font-bold text-white tracking-tight">{account.accountType === 'saving' ? 'Onyx Reserve' : 'Onyx Flow'}</h4>
                                 </div>
                             </div>
                             <div className="flex flex-col items-end">
-                                <Sparkles className="w-6 h-6 text-indigo-400 mb-2 opacity-50 group-hover:opacity-100 transition-opacity duration-1000" />
-                                <span className="text-[10px] font-mono text-white/30 tracking-widest uppercase">ID: VAULT-00{account._id?.slice(-4)}</span>
+                                <div className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[9px] font-black text-blue-400 uppercase tracking-widest mb-3">Priority Elite</div>
+                                <span className="text-[10px] font-mono text-white/20 tracking-tighter uppercase whitespace-nowrap">SIGNATURE ID: {account._id?.slice(-8).toUpperCase()}</span>
                             </div>
                         </div>
 
-                        <div className="mt-auto flex flex-col md:flex-row md:items-end justify-between gap-10">
-                            <div>
-                                <p className="text-xs text-white/30 mb-3 font-bold uppercase tracking-[0.2em]">Net Worth Value</p>
-                                <div className="flex items-baseline gap-3">
-                                    <span className="text-lg text-white/20 font-mono font-black">{account.currency}</span>
-                                    <span className="text-6xl font-black tracking-tighter text-white drop-shadow-2xl">
-                                        {account.balance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                        <div className="mt-auto flex flex-col md:flex-row md:items-end justify-between gap-12">
+                            <div className="space-y-4">
+                                <p className="text-[10px] text-white/30 font-black uppercase tracking-[0.4em]">Available Liquidity</p>
+                                <div className="flex items-baseline gap-4">
+                                    <span className="text-2xl text-white/20 font-black tracking-tighter">{account.currency}</span>
+                                    <span className="text-7xl font-black tracking-tighter text-white drop-shadow-[0_10px_40px_rgba(59,130,246,0.3)]">
+                                        {account.balance.toLocaleString('en-IN', { minimumFractionDigits: 0 })}
+                                        <span className="text-3xl text-white/40 font-bold">.00</span>
                                     </span>
                                 </div>
                             </div>
-                            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 py-5 group-hover:bg-white/10 transition-all">
-                                <p className="text-[10px] text-white/30 uppercase font-black tracking-widest mb-2">Access Key</p>
-                                <div className="flex items-center gap-3">
-                                    <div className="flex gap-1.5 items-center">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-white/20"></div>
-                                        <div className="w-1.5 h-1.5 rounded-full bg-white/20"></div>
-                                        <div className="w-1.5 h-1.5 rounded-full bg-white/20"></div>
-                                    </div>
-                                    <p className="text-xl font-mono font-black text-white tracking-[0.3em]">
-                                        {account.accountNumber.slice(-4)}
+                            
+                            <div className="relative">
+                                <div className="absolute inset-0 bg-blue-500/20 blur-2xl -m-4 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                <div className="relative bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[32px] p-8 py-6 flex flex-col items-end group-hover:border-white/30 transition-all">
+                                    <p className="text-[9px] text-white/30 uppercase font-black tracking-widest mb-2">Vault Identifier</p>
+                                    <p className="text-2xl font-mono font-black text-white tracking-[0.2em]">
+                                        •••• <span className="text-blue-400">{account.accountNumber.slice(-4)}</span>
                                     </p>
                                 </div>
                             </div>
