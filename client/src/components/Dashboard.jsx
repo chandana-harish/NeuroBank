@@ -27,12 +27,12 @@ const Dashboard = ({ onMenuClick }) => {
           </button>
         </div>
 
-        <div className="flex items-center gap-3 overflow-x-auto pb-2 md:pb-0">
-          <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-[#151828] border border-gray-200 dark:border-[#232738] text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors whitespace-nowrap shadow-sm">
+        <div className="flex items-center gap-3 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+          <button className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-[#151828] border border-gray-200 dark:border-[#232738] text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors whitespace-nowrap shadow-sm">
             <LayoutGrid className="w-4 h-4" />
             <span>Manage Widgets</span>
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-sm text-white font-medium transition-colors shadow-lg shadow-blue-600/20 whitespace-nowrap">
+          <button className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-sm text-white font-medium transition-colors shadow-lg shadow-blue-600/20 whitespace-nowrap">
             <Plus className="w-4 h-4" />
             <span>Add new Widget</span>
           </button>
@@ -40,9 +40,9 @@ const Dashboard = ({ onMenuClick }) => {
       </div>
 
       {/* Grid Layout taking cues from the image */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6">
         {/* Row 1 */}
-        <div className="md:col-span-4 h-80 rounded-3xl glass-card border flex flex-col justify-between relative overflow-hidden group">
+        <div className="lg:col-span-4 h-80 rounded-3xl glass-card border flex flex-col justify-between relative overflow-hidden group">
           {/* AI Insights placeholder */}
           <div className="absolute inset-0 bg-linear-to-br from-indigo-500/10 dark:from-indigo-900/50 to-blue-500/5 dark:to-blue-900/20"></div>
           <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 dark:bg-blue-500/20 rounded-full blur-3xl -mr-20 -mt-20"></div>
@@ -71,16 +71,16 @@ const Dashboard = ({ onMenuClick }) => {
           </div>
         </div>
 
-        <div className="md:col-span-4 h-80 rounded-3xl glass-card border p-6 relative">
+        <div className="lg:col-span-4 h-80 rounded-3xl glass-card border p-6 relative">
           {/* Balance Overview placeholder */}
           <h3 className="text-gray-500 dark:text-gray-400 font-medium mb-2">
             Balance Overview
           </h3>
-          <div className="flex items-end gap-3 mb-4">
-            <span className="text-3xl font-bold text-gray-900 dark:text-white">
+          <div className="flex flex-wrap items-end gap-3 mb-4">
+            <span className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
               {"No balance available."}
             </span>
-            <span className="text-emerald-600 dark:text-emerald-400 font-medium flex items-center bg-emerald-100 dark:bg-emerald-400/10 px-2 py-0.5 rounded text-xs mb-1">
+            <span className="text-emerald-600 dark:text-emerald-400 font-medium flex items-center bg-emerald-100 dark:bg-emerald-400/10 px-2 py-0.5 rounded text-[10px] sm:text-xs mb-1">
               ↑ {"No percentage change available."}
               <span className="text-gray-500 dark:text-gray-400 ml-1">
                 From last month
@@ -134,16 +134,16 @@ const Dashboard = ({ onMenuClick }) => {
           </button>
         </div>
 
-        <div className="md:col-span-4 h-80 rounded-3xl glass-card border p-6 relative">
+        <div className="lg:col-span-4 md:col-span-2 h-80 rounded-3xl glass-card border p-6 relative">
           {/* Earnings placeholder */}
           <h3 className="text-gray-500 dark:text-gray-400 font-medium mb-2">
             Earnings
           </h3>
-          <div className="flex items-end gap-3 mb-8">
-            <span className="text-3xl font-bold text-gray-900 dark:text-white">
+          <div className="flex flex-wrap items-end gap-3 mb-8">
+            <span className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
               {"No earnings available."}
             </span>
-            <span className="text-emerald-600 dark:text-emerald-400 font-medium flex items-center bg-emerald-100 dark:bg-emerald-400/10 px-2 py-0.5 rounded text-xs mb-1">
+            <span className="text-emerald-600 dark:text-emerald-400 font-medium flex items-center bg-emerald-100 dark:bg-emerald-400/10 px-2 py-0.5 rounded text-[10px] sm:text-xs mb-1">
               ↑ {"No percentage change available."}
               <span className="text-gray-500 dark:text-gray-400 ml-1">
                 From last month
@@ -182,7 +182,7 @@ const Dashboard = ({ onMenuClick }) => {
         </div>
 
         {/* Row 2 */}
-        <div className="md:col-span-8 bg-white dark:bg-[#0c0f1a] rounded-3xl border border-gray-200 dark:border-white/5 p-6 relative shadow-sm dark:shadow-none">
+        <div className="md:col-span-2 lg:col-span-8 bg-white dark:bg-[#0c0f1a] rounded-3xl border border-gray-200 dark:border-white/5 p-6 relative shadow-sm dark:shadow-none">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-medium text-gray-900 dark:text-white">
               Transactions
@@ -197,8 +197,8 @@ const Dashboard = ({ onMenuClick }) => {
             </div>
           </div>
 
-          <div className="space-y-4 overflow-x-auto">
-            <div className="min-w-125">
+          <div className="space-y-4 overflow-x-auto pb-4">
+            <div className="min-w-[600px]">
               {/* {dashboardData?.transactions?.map((tx) => (
                 <div
                   key={tx.id}
@@ -249,7 +249,7 @@ const Dashboard = ({ onMenuClick }) => {
           </div>
         </div>
 
-        <div className="md:col-span-4 bg-white dark:bg-[#0c0f1a] rounded-3xl border border-gray-200 dark:border-white/5 p-6 relative shadow-sm dark:shadow-none">
+        <div className="md:col-span-2 lg:col-span-4 bg-white dark:bg-[#0c0f1a] rounded-3xl border border-gray-200 dark:border-white/5 p-6 relative shadow-sm dark:shadow-none">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-medium text-gray-900 dark:text-white">
               Spending

@@ -56,8 +56,8 @@ const Sidebar = ({ isOpen, onClose }) => {
       <div
         className={`
         fixed md:static inset-y-0 left-0 z-50
-        w-80 h-screen bg-white dark:bg-[#0f1221] border-r border-gray-200 dark:border-[#1f2335] flex flex-col p-6 
-        transform transition-transform duration-300 ease-in-out
+        w-[280px] sm:w-80 h-screen bg-white dark:bg-[#0f1221] border-r border-gray-200 dark:border-[#1f2335] flex flex-col p-6 
+        overflow-y-auto transform transition-transform duration-300 ease-in-out
         ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
       `}
       >
