@@ -22,6 +22,7 @@ transporter.verify((error, success) => {
 
 const sendEmail = async (to, subject, text, html) => {
   try {
+    console.log(`Attempting to send email to: ${to} with subject: ${subject}`);
     const info = await transporter.sendMail({
       from: config.EMAIL_USER,
       to,
@@ -29,10 +30,10 @@ const sendEmail = async (to, subject, text, html) => {
       text,
       html,
     });
-    console.log("Email sent:", info.messageId);
+    console.log("Email sent successfully:", info.messageId);
     return info;
   } catch (error) {
-    console.error("Error sending email:", error);
+    console.error("Error in sendEmail utility:", error);
     throw error;
   }
 };
