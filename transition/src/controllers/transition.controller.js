@@ -4,77 +4,76 @@ import Ledger from "../models/ledger.model.js";
 import mongoose from "mongoose";
 
 export const createTransition = async (req, res) => {
-  const { fromAccount, toAccount, amount, idempotencyKey } = req.body;
-  if (!fromAccount || !toAccount || !amount || !idempotencyKey) {
-    return res.status(400).json({
-      message: "All fields are required",
-    });
-  }
-
-  const fromAccountObj = await Account.findById(fromAccount);
-  if (!fromAccountObj) {
-    return res.status(400).json({
-      message: "From account does not exist",
-    });
-  }
-
-  const toAccountObj = await Account.findById(toAccount);
-  if (!toAccountObj) {
-    return res.status(400).json({
-      message: "To account does not exist",
-    });
-  }
-
-  // Validation
-  const isTransactionAlreadyExist = await Transition.findOne({
-    idempotencyKey,
-  });
-  if (isTransactionAlreadyExist) {
-    if (isTransactionAlreadyExist.status === "completed") {
-      return res.status(400).json({
-        message: "Transaction already exist",
-        transition: isTransactionAlreadyExist,
-      });
-    }
-    if (isTransactionAlreadyExist.status === "pending") {
-      return res.status(400).json({
-        message: "Transaction is pending",
-        transition: isTransactionAlreadyExist,
-      });
-    }
-    if (isTransactionAlreadyExist.status === "failed") {
-      return res.status(400).json({
-        message: "Transaction is failed",
-        transition: isTransactionAlreadyExist,
-      });
-    }
-  }
-
-  // Check Amount
-  if (fromAccountObj.status !== "active" || toAccountObj.status !== "active") {
-    return res.status(400).json({
-      message: "From account or to account is not active",
-    });
-  }
-
-  // Calculate sender balance from ledger (sum of credits - sum of debits)
-  const ledgerEntries = await Ledger.find({ accountId: fromAccount });
-  const balance = ledgerEntries.reduce((acc, entry) => {
-    return entry.type === "credit" ? acc + entry.amount : acc - entry.amount;
-  }, 0);
-
-  if (balance < amount) {
-    return res.status(400).json({
-      message: "Insufficient balance",
-      currentBalance: balance,
-    });
-  }
-
-  // create Transition
-  let transition;
   try {
+    const { fromAccount, toAccount, amount, idempotencyKey } = req.body;
+    if (!fromAccount || !toAccount || !amount || !idempotencyKey) {
+      return res.status(400).json({
+        message: "All fields are required",
+      });
+    }
+
+    if (fromAccount === toAccount) {
+      return res.status(400).json({
+        message: "Source and destination accounts cannot be the same",
+      });
+    }
+
+    const fromAccountObj = await Account.findById(fromAccount);
+    if (!fromAccountObj) {
+      return res.status(400).json({
+        message: "Source account does not exist",
+      });
+    }
+
+    const toAccountObj = await Account.findById(toAccount);
+    if (!toAccountObj) {
+      return res.status(400).json({
+        message: "Invalid account ID. Recipient does not exist.",
+      });
+    }
+
+    // Validation
+    const isTransactionAlreadyExist = await Transition.findOne({
+      idempotencyKey,
+    });
+    if (isTransactionAlreadyExist) {
+      const statuses = ["completed", "pending", "failed"];
+      if (statuses.includes(isTransactionAlreadyExist.status)) {
+        return res.status(400).json({
+          message: `Transition rejected: Already ${isTransactionAlreadyExist.status}`,
+          transition: isTransactionAlreadyExist,
+        });
+      }
+    }
+
+    // Check Status
+    if (
+      fromAccountObj.status !== "active" ||
+      toAccountObj.status !== "active"
+    ) {
+      return res.status(400).json({
+        message: "Transition rejected: Account is not active",
+      });
+    }
+
+    // Calculate sender balance from ledger (sum of credits - sum of debits)
+    const ledgerEntries = await Ledger.find({ accountId: fromAccount });
+    const balance = ledgerEntries.reduce((acc, entry) => {
+      return entry.type === "credit" ? acc + entry.amount : acc - entry.amount;
+    }, 0);
+
+    if (balance < amount) {
+      return res.status(400).json({
+        message: "Insufficient amount. Please check your balance.",
+        currentBalance: balance,
+      });
+    }
+
+    // create Transition
+    let transition;
     const session = await mongoose.startSession();
     session.startTransaction();
+
     // First create transition
     transition = (
       await Transition.create(
@@ -103,9 +102,9 @@ export const createTransition = async (req, res) => {
       ],
       { session },
     );
-    await new Promise((resolve) => {
-      setTimeout(resolve, 15 * 1000);
-    });
+
+    // Simulate clearance
+    await new Promise((resolve) => setTimeout(resolve, 15 * 1000));
 
     // Third create ledger entry for credit
     const creditLedgerEntry = await Ledger.create(
@@ -120,37 +119,31 @@ export const createTransition = async (req, res) => {
       { session },
     );
 
-    // Fourth commit transaction
-
+    // Update status
     await Transition.findOneAndUpdate(
-      {
-        _id: transition._id,
-      },
-      {
-        status: "completed",
-      },
+      { _id: transition._id },
+      { status: "completed" },
       { session },
     );
 
     await session.commitTransaction();
     session.endSession();
 
-    // Email
-    // await sendEmail({
-    //   to: fromAccountObj.email,
-    //   subject: "Transition Completed",
-    //   text: `Your transition of ${amount} to account ${toAccountObj.name} has been completed.`,
-    // });
-
     return res.status(201).json({
       message: "Transition created successfully",
       transition,
-      debitLedgerEntry,
-      creditLedgerEntry,
+      debitLedgerEntry: debitLedgerEntry[0],
+      creditLedgerEntry: creditLedgerEntry[0],
     });
   } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(400).json({
+        message: "Invalid account ID format. Recipient not found.",
+      });
+    }
+    console.error("Transition Error:", error);
     return res.status(500).json({
-      message: "Internal server error",
+      message: "Internal server error during transition",
     });
   }
 };
