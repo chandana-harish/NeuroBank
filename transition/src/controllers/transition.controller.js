@@ -173,3 +173,83 @@ export const getTransitions = async (req, res) => {
     });
   }
 };
+
+export const generateInitialFunds = async (req, res) => {
+  try {
+    const { toAccount, amount, idempotencyKey } = req.body;
+    if (!toAccount || !amount || !idempotencyKey) {
+      return res.status(400).json({
+        message: "All fields are required",
+      });
+    }
+
+    const toUserAccount = await Account.findById(toAccount);
+    if (!toUserAccount) {
+      return res.status(400).json({
+        message: "Account does not exist",
+      });
+    }
+
+    const fromUserAccount = await Account.findOne({ userId: req.user._id });
+    if (!fromUserAccount) {
+      return res.status(400).json({
+        message: "Account does not exist",
+      });
+    }
+
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    const transition = await Transition.create({
+      fromAccount: fromUserAccount._id,
+      toAccount: toUserAccount._id,
+      amount: amount,
+      idempotencyKey: crypto.randomUUID(),
+      status: "pending",
+    });
+
+    const debitLedgerEntry = await Ledger.create(
+      [
+        {
+          accountId: fromUserAccount._id,
+          amount: amount,
+          transitionId: transition._id,
+          type: "debit",
+        },
+      ],
+      { session },
+    );
+
+    const creditLedgerEntry = await Ledger.create(
+      [
+        {
+          accountId: toUserAccount._id,
+          amount: amount,
+          transitionId: transition._id,
+          type: "credit",
+        },
+      ],
+      { session },
+    );
+
+    await Transition.findOneAndUpdate(
+      { _id: transition._id },
+      { status: "completed" },
+      { session },
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return res.status(201).json({
+      message: "Transition created successfully",
+      transition,
+      debitLedgerEntry: debitLedgerEntry[0],
+      creditLedgerEntry: creditLedgerEntry[0],
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
