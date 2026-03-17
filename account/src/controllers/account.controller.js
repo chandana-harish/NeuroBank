@@ -20,7 +20,10 @@ export const createAccount = async (req, res) => {
       currency: "INR",
       status: "active",
     });
-    await publishToQueue("account.created", account);
+    await publishToQueue("account.created", {
+      ...account.toObject(),
+      ownerEmail: req.user.email,
+    });
     return res.status(201).json({ message: "Account Created", account });
   } catch (error) {
     return res.status(500).json({
