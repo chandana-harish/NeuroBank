@@ -25,6 +25,7 @@ export const register = async (req, res) => {
       password,
       role: "user",
       isVerifyEmail: false,
+      systemUser: false,
     });
 
     return res.status(201).json({

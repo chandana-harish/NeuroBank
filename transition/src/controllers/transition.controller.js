@@ -174,12 +174,10 @@ export const getTransitions = async (req, res) => {
   }
 };
 
-import crypto from "crypto";
-
 export const generateInitialFunds = async (req, res) => {
   try {
-    const { toAccount, amount, idempotencyKey } = req.body;
-    if (!toAccount || !amount || !idempotencyKey) {
+    const { toAccount, amount } = req.body;
+    if (!toAccount || !amount) {
       return res.status(400).json({
         message: "All fields are required",
       });
