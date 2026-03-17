@@ -29,6 +29,11 @@ export const register = async (req, res) => {
       systemUser: false,
     });
 
+    publishToQueue("user.register", {
+      email: user.email,
+      fullName: user.fullName,
+    });
+
     return res.status(201).json({
       message: "User created",
       user,

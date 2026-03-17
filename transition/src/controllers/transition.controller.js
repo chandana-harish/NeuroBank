@@ -145,11 +145,19 @@ export const createTransition = async (req, res) => {
     await session.commitTransaction();
     session.endSession();
 
+    // Fetch emails for notification
+    const [sender, receiver] = await Promise.all([
+      mongoose.model("User").findById(fromAccountObj.owner),
+      mongoose.model("User").findById(toAccountObj.owner),
+    ]);
+
     await publishToQueue("transition.completed", {
       fromAccount: fromAccount,
       toAccount: toAccount,
       amount: amount,
       transitionId: transition._id,
+      senderEmail: sender?.email,
+      receiverEmail: receiver?.email,
     });
 
     return res.status(201).json({
@@ -294,11 +302,18 @@ export const generateInitialFunds = async (req, res) => {
       await session.commitTransaction();
       session.endSession();
 
+      const [sender, receiver] = await Promise.all([
+        mongoose.model("User").findById(fromUserAccount.owner),
+        mongoose.model("User").findById(toUserAccount.owner),
+      ]);
+
       await publishToQueue("transition.completed", {
         fromAccount: fromUserAccount._id,
         toAccount: toUserAccount._id,
         amount: amount,
         transitionId: transition._id,
+        senderEmail: sender?.email,
+        receiverEmail: receiver?.email,
       });
 
       return res.status(201).json({

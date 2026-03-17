@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+      }
+      .container {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+      }
+      .header {
+        background: #38a169;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        border-radius: 8px 8px 0 0;
+      }
+      .content {
+        padding: 20px;
+      }
+      .transaction-details {
+        background: #f7fafc;
+        padding: 15px;
+        border-radius: 4px;
+        margin: 15px 0;
+      }
+      .footer {
+        text-align: center;
+        font-size: 12px;
+        color: #777;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Transaction Alert: Account Credited</h1>
+      </div>
+      <div class="content">
+        <p>Hello,</p>
+        <p>Your account has been credited.</p>
+        <div class="transaction-details">
+          <p><strong>Amount:</strong> {{amount}}</p>
+          <p><strong>From Account:</strong> {{fromAccount}}</p>
+          <p><strong>Date & Time:</strong> {{dateTime}}</p>
+          <p><strong>Transaction ID:</strong> {{transitionId}}</p>
+        </div>
+        <p>Thank you for banking with us.</p>
+        <p>Best regards,<br />The Banking Team</p>
+      </div>
+      <div class="footer">
+        &copy; 2026 Banking Microservices. All rights reserved.
+      </div>
+    </div>
+  </body>
+</html>
