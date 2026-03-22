@@ -1,90 +1,126 @@
 import { subscribeToQueue } from "./rabbit.js";
 import sendEmail from "../utils/email.js";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+function startListening() {
+  // ✅ USER CREATED
+  subscribeToQueue("user_created", async (data) => {
+    const { email, firstName, lastName } = data;
 
-const renderTemplate = (templateName, data) => {
-  const templatePath = path.join(
-    __dirname,
-    `../templates/${templateName}.html`,
-  );
-  let htmlContent = fs.readFileSync(templatePath, "utf8");
-  Object.keys(data).forEach((key) => {
-    const regex = new RegExp(`{{${key}}}`, "g");
-    htmlContent = htmlContent.replace(regex, data[key]);
-  });
-  return htmlContent;
-};
+    const template = `
+<!doctype html>
+<html>
+  <head>
+    <style>
+      body { font-family: "Segoe UI", sans-serif; color: #333; }
+      .container { max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; }
+      .header { background: #4f46e5; color: white; padding: 20px; text-align: center; }
+      .content { padding: 20px; }
+      .footer { text-align: center; font-size: 12px; color: #777; padding: 10px; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Welcome to NeuroBank</h1>
+      </div>
+      <div class="content">
+        <p>Hello ${firstName} ${lastName},</p>
+        <p>Your account has been created successfully.</p>
+        <p>We are happy to have you onboard.</p>
+      </div>
+      <div class="footer">© 2026 NeuroBank</div>
+    </div>
+  </body>
+</html>
+    `;
 
-export const initNotificationConsumer = () => {
-  console.log("Initializing Notification Consumer...");
-
-  // Register User Notification
-  subscribeToQueue("user.register", async (data) => {
-    console.log("Received user.register event:", data);
-    const { email, fullName } = data;
-    const { firstName, lastName } = fullName || {};
-
-    const html = renderTemplate("registration", {
-      firstName: firstName || "User",
-      lastName: lastName || "",
-    });
-
-    await sendEmail(
-      email,
-      "Welcome to Our Bank!",
-      "Welcome to our bank!",
-      html,
-    );
+    await sendEmail(email, "Welcome to NeuroBank", "", template);
   });
 
-  // Transaction Notifications (Debit & Credit)
-  subscribeToQueue("transition.completed", async (data) => {
-    console.log("Received transition.completed event:", data);
-    const {
-      fromAccount,
-      toAccount,
-      amount,
-      transitionId,
-      senderEmail,
-      receiverEmail,
-    } = data;
-    const dateTime = new Date().toLocaleString();
+  // ✅ USER CREDITED
+  subscribeToQueue("user_credited", async (data) => {
+    const { email, firstName, amount, fromAccount, dateTime, transactionId } =
+      data;
 
-    // Debit notification for sender
-    if (senderEmail) {
-      const debitHtml = renderTemplate("debit", {
-        amount,
-        toAccount,
-        dateTime,
-        transitionId,
-      });
-      await sendEmail(
-        senderEmail,
-        "Transaction Alert: Account Debited",
-        "Your account has been debited",
-        debitHtml,
-      );
-    }
+    const template = `
+<!doctype html>
+<html>
+  <head>
+    <style>
+      body { font-family: "Segoe UI", sans-serif; color: #333; }
+      .container { max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; }
+      .header { background: #16a34a; color: white; padding: 20px; text-align: center; }
+      .content { padding: 20px; }
+      .box { background: #f3f4f6; padding: 15px; border-radius: 5px; }
+      .footer { text-align: center; font-size: 12px; color: #777; padding: 10px; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Amount Credited</h1>
+      </div>
+      <div class="content">
+        <p>Hello ${firstName},</p>
+        <p>Your account has been credited.</p>
+        <div class="box">
+          <p><strong>Amount:</strong> ${amount}</p>
+          <p><strong>From:</strong> ${fromAccount}</p>
+          <p><strong>Date:</strong> ${dateTime}</p>
+          <p><strong>Transaction ID:</strong> ${transactionId}</p>
+        </div>
+      </div>
+      <div class="footer">© 2026 NeuroBank</div>
+    </div>
+  </body>
+</html>
+    `;
 
-    // Credit notification for receiver
-    if (receiverEmail) {
-      const creditHtml = renderTemplate("credit", {
-        amount,
-        fromAccount,
-        dateTime,
-        transitionId,
-      });
-      await sendEmail(
-        receiverEmail,
-        "Transaction Alert: Account Credited",
-        "Your account has been credited",
-        creditHtml,
-      );
-    }
+    await sendEmail(email, "Amount Credited", "", template);
   });
-};
+
+  // ✅ USER DEBITED
+  subscribeToQueue("user_debited", async (data) => {
+    const { email, firstName, amount, toAccount, dateTime, transactionId } =
+      data;
+
+    const template = `
+<!doctype html>
+<html>
+  <head>
+    <style>
+      body { font-family: "Segoe UI", sans-serif; color: #333; }
+      .container { max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; }
+      .header { background: #dc2626; color: white; padding: 20px; text-align: center; }
+      .content { padding: 20px; }
+      .box { background: #f3f4f6; padding: 15px; border-radius: 5px; }
+      .footer { text-align: center; font-size: 12px; color: #777; padding: 10px; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Amount Debited</h1>
+      </div>
+      <div class="content">
+        <p>Hello ${firstName},</p>
+        <p>Your account has been debited.</p>
+        <div class="box">
+          <p><strong>Amount:</strong> ${amount}</p>
+          <p><strong>To:</strong> ${toAccount}</p>
+          <p><strong>Date:</strong> ${dateTime}</p>
+          <p><strong>Transaction ID:</strong> ${transactionId}</p>
+        </div>
+        <p>If this was not you, contact support immediately.</p>
+      </div>
+      <div class="footer">© 2026 NeuroBank</div>
+    </div>
+  </body>
+</html>
+    `;
+
+    await sendEmail(email, "Amount Debited", "", template);
+  });
+}
+
+export default startListening;
