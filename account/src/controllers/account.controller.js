@@ -14,6 +14,7 @@ export const createAccount = async (req, res) => {
     }
     const account = await Account.create({
       owner: req.user.id,
+      ownerName: req.user.fullName,
       accountNumber: generateAccountNumber(),
       accountType: "saving",
       balance: 0,
