@@ -7,7 +7,7 @@ ENV WDS_SOCKET_PORT=0
  
 WORKDIR /usr/app/client
  
-COPY ./package.json ./
+COPY ./package*.json ./
 RUN npm install
  
 COPY ./ ./
