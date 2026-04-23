@@ -1,15 +1,20 @@
-FROM node:20-alpine
+# ---------- Stage 1: Build ----------
+FROM node:20-alpine AS builder
  
-# Add the following lines
-ENV CI=true
-ENV WDS_SOCKET_PORT=0
+WORKDIR /app
  
- 
-WORKDIR /usr/app/client
- 
-COPY ./package*.json ./
+COPY package*.json ./
 RUN npm install
  
-COPY ./ ./
+COPY . .
+RUN npm run build
  
-CMD [ "npm" ,"run","dev" ]
+ 
+# ---------- Stage 2: Serve ----------
+FROM nginx:alpine
+ 
+COPY --from=builder /app/dist /usr/share/nginx/html
+ 
+EXPOSE 80
+ 
+CMD ["nginx", "-g", "daemon off;"]
